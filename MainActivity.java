@@ -43,16 +43,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     CameraBridgeViewBase cameraBridgeViewBase;
     Mat mRgba;
 
-   /* static {
-        if (!OpenCVLoader.initDebug()) Log.d(TAG, "OpenCV not loaded");
-        else Log.d(TAG, "OpenCV loaded");
-    } */
-
     BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(MainActivity.this) {
         @Override
         public void onManagerConnected(int status){
             switch (status) {
                 case BaseLoaderCallback.SUCCESS:
+                    
+                    // importando os algorítmos
                     try {
                         InputStream is = getResources().openRawResource(R.raw.haarcascade_frontalface_alt);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
@@ -158,15 +155,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat();
-        //mRgbat = new Mat();
-        //dst = new Mat();
-        //mGray = new Mat();
     }
 
+    // onde cada frame é processado
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
-        //Core.transpose(mRgba, mRgbat);
         Core.flip(mRgba, mRgba, 1);
 
         MatOfRect faceDetections = new MatOfRect();
@@ -175,17 +169,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         for(Rect rect : faceDetections.toArray()){
             Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255,0,0));
         }
-        /*Imgproc.resize(mRgbat, dst, mRgba.size());
-        mRgba.release();
-        //mRgbat.release();*/
+        
         return mRgba;
     }
 
     @Override
     public void onCameraViewStopped() {
         mRgba.release();
-        //mRgbat.release();
-        //dst.release();
-        //mGray.release();
     }
 }
